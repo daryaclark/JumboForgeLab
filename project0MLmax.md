@@ -78,7 +78,11 @@ Now that you have tested the Teachable Machine, we can train the model for our p
 1. Start a new Teachable Machine project
 1. Upload photos into their own categories, label categories, and produce the model
 
-We can now use our model
+We can now use our model to identify objects
+
+### Incorporating the model into code
+
+Teachable Machine provides exportable code to be able to use our model 
 
 
 

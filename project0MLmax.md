@@ -133,7 +133,7 @@ However, the code currently runs using OpenCV, so we need to change this to run 
     print("Class:", class_name[2:], end="")
     print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
 ```
-Being sure to replace ``` camera.release()``` with ```picam2.stop()```
+Being sure to replace ```camera.release()``` with ```picam2.stop()```
 
 
 

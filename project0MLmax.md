@@ -176,6 +176,7 @@ class DriveDistanceActionClient(Node):
     def set_wait_for_change(self, wait):
         self._wait_for_change = wait
 
+    # get input from CLI and continue based on this 
     def getInput():
         user_input = input('Continue? (y/n): ')
         if user_input == 'y':
@@ -184,11 +185,12 @@ class DriveDistanceActionClient(Node):
             return False
         else:
             print('Invalid input. Please enter either "y" or "n".')
-            return getInput()  # Recursively call the function if the input is invalid
+            # Recursively call the function if the input is invalid
+            return getInput()
 
 def main():
     rclpy.init()
-    node = UltrasonicSensorNode()
+    node = DriveDistanceActionClient()
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
@@ -204,6 +206,76 @@ if __name__ == '__main__':
     main()
 ```
 
-This program uses ROS2 actions to drive the robot forward some set distance. Actions are a communication type in ROS2 that are built on topics and services. Their functionality is similar to services, except actions are you can cancel them while executing. They also provide steady feedback, as opposed to services which return a single response. An “action client” node sends a goal to an “action server” node that acknowledges the goal and returns a stream of feedback and a result.
+This program uses ROS2 actions to drive the robot forward some set distance and continues as a response to user input. Actions are a communication type in ROS2 that are built on topics and services. Their functionality is similar to services, except actions are you can cancel them while executing. They also provide steady feedback, as opposed to services which return a single response. An “action client” node sends a goal to an “action server” node that acknowledges the goal and returns a stream of feedback and a result.
 
- 
+Now, let us incorporate the turning action to this code:
+
+```
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import Float32
+
+class DriveDistanceActionClient(Node):
+    def __init__(self):
+        super().__init__('drive_distance_action_client')
+        self._action_client = ActionClient(self, DriveDistance, '/drive_distance')
+        self._turn_client = ActionClient(self, RotateAngle, '/rotate_angle')
+        
+    def send_goal(self, distance = 0.3, max_translation_speed = 0.1):
+        goal_msg = DriveDistance.Goal()
+        goal_msg.distance = distance
+        goal_msg.max_translation_speed = max_translation_speed
+
+        self._action_client.wait_for_server()
+        self._send_goal_future = self._action_client.send_goal_async(goal_msg)
+        self._send_goal_future.add_done_callback(self.goal_response_callback)
+
+    def goal_response_callback(self, future):
+        goal_handle = future.result()
+        if goal_handle.accepted:
+            self.get_logger().info('Goal accepted :)')
+        else:
+            self.get_logger().info('Goal rejected :(')
+
+        self._wait_for_change = getInput()
+        # Check if we need to wait for a change before running again
+        if self._wait_for_change == 0:
+            # continue if forward
+            self.send_goal()
+        
+
+    def set_wait_for_change(self, wait):
+        self._wait_for_change = wait
+
+    # get input from CLI and continue based on this 
+    def getInput():
+        user_input = input('Continue? (f/r/l): ')
+        if user_input == 'f':
+            return 0
+        elif user_input == 'r':
+            return 1
+        elif user_input == 'l':
+            return 2
+        else:
+            print('Invalid input. Please enter either "y" or "n".')
+            # Recursively call the function if the input is invalid
+            return getInput()
+
+def main():
+    rclpy.init()
+    node = DriveDistanceActionClient()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+
+    # Clean up resources
+    finally: 
+        node.destroy_node()
+        rclpy.shutdown()
+        GPIO.cleanup()
+
+if __name__ == '__main__':
+    main()
+
+```

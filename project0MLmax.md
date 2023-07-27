@@ -1,4 +1,3 @@
-
 # Project 0: Applying Machine Learning Principles to ROS2
 ## Learning Objectives
 - Practice writing ROS2 python scripts to control motors and sensors on the iRobot Create3
@@ -82,7 +81,21 @@ We can now use our model to identify objects
 
 ### Incorporating the model into code
 
-Teachable Machine provides exportable code to be able to use our model 
+Teachable Machine provides exportable code to be able to use our model with other python code. In order to do this: 
+1. Export the model 
+1. Select Tensorflow OpenCV Keras model
+1. Download the model 
+1. Unzip and place model & labels file in Github and download to the Pi
+1. Create a new file on the Pi using the code from the model 
+1. Install the teachable machine library onto the pi: 
+    ```
+    sudo pip3 install teachable-machine
+    
+    ```
+
+
+
+
 
 
 

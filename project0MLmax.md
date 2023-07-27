@@ -157,18 +157,34 @@ class DriveDistanceActionClient(Node):
         goal_msg.max_translation_speed = max_translation_speed
 
         self._action_client.wait_for_server()
-
         self._send_goal_future = self._action_client.send_goal_async(goal_msg)
-
         self._send_goal_future.add_done_callback(self.goal_response_callback)
 
     def goal_response_callback(self, future):
         goal_handle = future.result()
-        if not goal_handle.accepted:
+        if goal_handle.accepted:
+            self.get_logger().info('Goal accepted :)')
+        else:
             self.get_logger().info('Goal rejected :(')
-            return
 
-        self.get_logger().info('Goal accepted :)')
+        self._wait_for_change = getInput()
+        # Check if we need to wait for a change before running again
+        if self._wait_for_change:
+            # continue if yes
+            self.send_goal()
+
+    def set_wait_for_change(self, wait):
+        self._wait_for_change = wait
+
+    def getInput():
+        user_input = input('Continue? (y/n): ')
+        if user_input == 'y':
+            return True
+        elif user_input == 'n':
+            return False
+        else:
+            print('Invalid input. Please enter either "y" or "n".')
+            return getInput()  # Recursively call the function if the input is invalid
 
 def main():
     rclpy.init()

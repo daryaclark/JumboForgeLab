@@ -135,10 +135,59 @@ However, the code currently runs using OpenCV, so we need to change this to run 
 ```
 Being sure to replace ```camera.release()``` with ```picam2.stop()```
 
-Now, our program captures an image from our Picamera and analyzes the photo to predict what class the object in the image belongs to. 
+Now, our program captures an image from our Picamera and analyzes the photo to predict what class the object in the image belongs to and we can begin writing code for the Create to move accordingly. 
 
+### Controlling the Robot
 
+First, to practice controling the robot, run the following:
 
+```
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import Float32
 
+class DriveDistanceActionClient(Node):
+    def __init__(self):
+        super().__init__('drive_distance_action_client')
+        self._action_client = ActionClient(self, DriveDistance, '/drive_distance')
 
+    def send_goal(self, distance = 0.3, max_translation_speed = 0.1):
+        goal_msg = DriveDistance.Goal()
+        goal_msg.distance = distance
+        goal_msg.max_translation_speed = max_translation_speed
 
+        self._action_client.wait_for_server()
+
+        self._send_goal_future = self._action_client.send_goal_async(goal_msg)
+
+        self._send_goal_future.add_done_callback(self.goal_response_callback)
+
+    def goal_response_callback(self, future):
+        goal_handle = future.result()
+        if not goal_handle.accepted:
+            self.get_logger().info('Goal rejected :(')
+            return
+
+        self.get_logger().info('Goal accepted :)')
+
+def main():
+    rclpy.init()
+    node = UltrasonicSensorNode()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+
+    # Clean up resources
+    finally: 
+        node.destroy_node()
+        rclpy.shutdown()
+        GPIO.cleanup()
+
+if __name__ == '__main__':
+    main()
+```
+
+This program uses ROS2 actions to drive the robot forward some set distance. Actions are a communication type in ROS2 that are built on topics and services. Their functionality is similar to services, except actions are you can cancel them while executing. They also provide steady feedback, as opposed to services which return a single response. An “action client” node sends a goal to an “action server” node that acknowledges the goal and returns a stream of feedback and a result.
+
+ 

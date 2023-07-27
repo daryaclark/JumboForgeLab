@@ -23,7 +23,13 @@ To set up the Raspberry Pi Camera Module 3, lift up the flap of the J3 camera pi
 
 ![Raspberry Pi 4 with Pi Camera Module 3 Inserted](j3installation.webp)
 
-In order to be able to run the camera, download the Raspberry Pi configuration page:
+In order to be able to use the camera, we need to change the camera setting in the Raspberry Pi configuration page and download the package to be able to use the camera. First, download the camera package:
+
+```
+sudo apt install picamera2
+```
+Now, download the raspberry pi configuration:
+
 ```
 sudo apt install raspi-config
 ```
@@ -33,30 +39,17 @@ Once this is installed, open the configuration by calling
 sudo raspi-config
 ```
 
-Then, open interface options and enable Legacy Camera, and then reboot the pi
+Then, open interface options and disable Legacy Camera, and then reboot the pi
 
 
 To test the camera, run the following python script:
 ```
-from picamera2 import Picamera2
-import time
 
-picam2 = Picamera2()
-
-#configure the picamera
-picam2.set_controls({"AfMode": controls.AfModeEnum.Continuous}) #sets auto focus mode
-
-picam2.start() #must start the camera before taking any images
-time.sleep(1)
-
-picam2.capture_file('image.jpg')
-time.sleep(1)
-
-
-picam2.stop()
 ```
 
 Either using a code editor logged in to the pi or VNC viewer, this will allow you to see if the camera is taking photos, as you can view these photos in your desktop
+
+Now that we know our camera is functioning, we can use it to train our Machine Learning Model.
 
 
 ### Training the Model

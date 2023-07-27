@@ -49,15 +49,12 @@ import time
 
 picam2 = Picamera2()
 
-#configure the picamera
-#picam2.set_controls({"AfMode": controls.AfModeEnum.Continuous}) #sets auto focus mode
-
-picam2.start() #must start the camera before taking any images
+# must start the camera before taking any images
+picam2.start() 
 time.sleep(1)
 
+# capture image
 picam2.capture_file('image.jpg')
-time.sleep(1)
-
 
 picam2.stop()
 
@@ -69,8 +66,19 @@ Now that we know our camera is functioning, we can use it to train our Machine L
 
 
 ### Training the Model
+
 Google's Teachable Machine provides an intuitive first look at Machine Learning. 
 
+First, [open the page](https://teachablemachine.withgoogle.com/train) and test the model using your web browser and computer camera, select image project, select standard image, and hold up objects to take images. Now, once the model is trained, we can use our webcam
+
+Now that you have tested the Teachable Machine, we can train the model for our project accordingly. 
+
+1. Take images with the camera in bulk and push to github
+1. Download the zip file of images and unzip on your laptop
+1. Start a new Teachable Machine project
+1. Upload photos into their own categories, label categories, and produce the model
+
+We can now use our model
 
 
 

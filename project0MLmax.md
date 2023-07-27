@@ -92,7 +92,7 @@ Teachable Machine provides exportable code to be able to use our model with othe
     sudo pip3 install teachable-machine
     
     ```
-However, the code currently runs using OpenCV, so we need to change this to run with the Picamera.
+However, the code currently runs using OpenCV, so we need to change this to run with the Picamera. Note, this is only the portion that needs to be replaced, and the initialization of libraries and model loading are still necessary. 
 
 
 ```
@@ -134,6 +134,8 @@ However, the code currently runs using OpenCV, so we need to change this to run 
     print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
 ```
 Being sure to replace ```camera.release()``` with ```picam2.stop()```
+
+Now, our program captures an image from our Picamera and analyzes the photo to predict what class the object in the image belongs to. 
 
 
 

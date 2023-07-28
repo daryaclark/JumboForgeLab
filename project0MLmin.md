@@ -169,7 +169,9 @@ def timer_callback(self):
         self.publisher.publish(msg)
         self.get_logger().info('Publishing: "%s"' % msg.data)
 
-``` 
+```
+
+Now, the task is to compile each component. Incorporate the Driver action to drive forward and if an object is 6 inches from the robot, take a photo with the Picamera, analyze the photo using the Teachable Machine, and turn either left or right depending on what the object is. 
 
 
 

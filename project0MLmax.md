@@ -214,12 +214,16 @@ Now, let us incorporate the turning action to this code:
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float32
+from rclpy.action import ActionClient
+from irobot_create_msgs.action import DriveDistance, RotateAngle
+
 
 class DriveDistanceActionClient(Node):
     def __init__(self):
         super().__init__('drive_distance_action_client')
         self._action_client = ActionClient(self, DriveDistance, '/drive_distance')
         self._turn_client = ActionClient(self, RotateAngle, '/rotate_angle')
+        self._send_goal_future = None
         
     def send_goal(self, distance = 0.3, max_translation_speed = 0.1):
         goal_msg = DriveDistance.Goal()
@@ -242,13 +246,47 @@ class DriveDistanceActionClient(Node):
         if self._wait_for_change == 0:
             # continue if forward
             self.send_goal()
+        if self._wait_for_change == 1:
+            
+        if self._wait_for_change == 2:
         
 
     def set_wait_for_change(self, wait):
         self._wait_for_change = wait
 
+    def right_turn(self):
+        speed = .1
+        goal_msg = RotateAngle.Goal()
+        
+
+        goal_msg.angle = 90
+        goal_msg.max_rotation_speed = speed
+        
+
+        self._turn_client.wait_for_server()
+
+        self._send_goal_future = self._turn_client.send_goal_async(goal_msg)
+
+        self._send_goal_future.add_done_callback(self.goal_response_callback)
+
+
+    def left_turn(self):
+        speed = .1
+        goal_msg = RotateAngle.Goal()
+
+        goal_msg.angle = -90
+        goal_msg.max_rotation_speed = speed
+
+        self._turn_client.wait_for_server()
+
+        self._send_goal_future = self._turn_client.send_goal_async(goal_msg)
+
+        self._send_goal_future.add_done_callback(self.goal_response_callback)
+
+
+
     # get input from CLI and continue based on this 
-    def getInput():
+    def getInput(self):
         user_input = input('Continue? (f/r/l): ')
         if user_input == 'f':
             return 0

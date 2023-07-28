@@ -123,6 +123,53 @@ def set_wait_for_change(self, wait):
 
 ```
 
+Now, configure a program to use actions to turn 90 degrees left or right based on user input. 
+
+Integrate these two together, creating one Action Client for both types of actions. 
+
+It may be useful to incorporate an ultrasonic sensor. This would operate in the same way as receiving input from the user, but use distance measurements as the input to respond to: 
+
+```
+# use ultrasonic sensor to measure data
+    def measure_distance(self):
+        # Set Trigger to HIGH
+        GPIO.output(GPIO_TRIGGER, True)
+        time.sleep(0.00001)
+        GPIO.output(GPIO_TRIGGER, False)
+
+        start_time = time.time()
+        stop_time = time.time()
+
+        # Save StartTime
+        while GPIO.input(GPIO_ECHO) == 0:
+            start_time = time.time()
+
+        # Save time of arrival
+        while GPIO.input(GPIO_ECHO) == 1:
+            stop_time = time.time()
+
+        # Time difference between start and arrival
+        time_elapsed = stop_time - start_time
+
+        # Speed of sound in air (343 meters per second) and 100 for conversion to centimeters
+        distance_cm = round((time_elapsed * 34300) / 2, 2)
+
+        print(distance_cm)
+
+        return distance_cm
+```
+
+Because we are working with action clients, this would have to itself be a class method. We can also publish this data with adding the following to our timer callback: 
+
+```
+def timer_callback(self):
+        distance_cm = self.measure_distance()
+        msg = Float32()
+        msg.data = distance_cm
+        self.publisher.publish(msg)
+        self.get_logger().info('Publishing: "%s"' % msg.data)
+
+``` 
 
 
 

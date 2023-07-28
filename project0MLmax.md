@@ -5,6 +5,7 @@
 - Learn techniques in Machine Learning and use in code 
 
 ## Project Outline
+With the rise of Aritificial Intelligence and Machine Learning, being able to help autonomous robots make informed decisions and being  capable of perceiving, reasoning, and adapting to their environment is essential to the world of robotics. 
 This report outlines a more advanced project incorportating hardware and robotics concepts with Machine Learning. Students will use the iRobot Create3 with a Raspberry Pi Camera Module 3 and an ultrasonic sensor to navigate an obstacle course. Students will program robots to drive forward. If an object is within 6 inches of its path, students will take a photo using the Picamera2. Before running, students will use Google's Teachable Machine to create a trained data set on what 8 objects are but not their orientation or placement in the course. Thus, when they take a photo, the object will be identified accordingly. Prior to starting the final run through, students will be provided the course 10 minutes before, thus knowing whether to turn left or right after approaching the object. All turns should be 90 degrees.
 
 ## Resources needed
@@ -317,3 +318,7 @@ if __name__ == '__main__':
     main()
 
 ```
+
+Now, we have code that responds to input from the user and turns accordingly. 
+
+

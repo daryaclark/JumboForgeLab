@@ -248,9 +248,9 @@ class DriveDistanceActionClient(Node):
             # continue if forward
             self.send_goal()
         if self._wait_for_change == 1:
-            
+            self.right_turn()
         if self._wait_for_change == 2:
-        
+            self.left_turn()
 
     def set_wait_for_change(self, wait):
         self._wait_for_change = wait

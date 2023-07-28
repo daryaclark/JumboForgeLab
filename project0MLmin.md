@@ -109,4 +109,20 @@ However, the code currently runs using OpenCV, so we need to change this to run 
 
 Write a program that uses ROS2 actions to drive the robot forward some set distance. In ROS2, actions are a way of communicating between different parts of the robot. Unlike regular services, actions allow you to cancel them while they are running and provide continuous feedback on the progress. In this setup, an "action client" node sends a goal to an "action server" node, which acknowledges the goal and continuously updates the client with feedback until the task is completed. The following may be helpful: [ROS2 actions](https://docs.ros.org/en/foxy/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Actions/Understanding-ROS2-Actions.html), [iRobot Create3 DriveDistance](https://github.com/iRobotEducation/irobot_create_msgs/blob/rolling/action/DriveDistance.action), and [iRobot Create3 RotateAngle](https://github.com/iRobotEducation/irobot_create_msgs/blob/rolling/action/RotateAngle.action)
 
+First, configure a program to use actions to drive forward .3 meters. Next, configure a program to do this in response to an input from the user. Note that ROS requests are made asynchronously as a new thread, so python's time function will not be useful here. In your goal_response_callback, it may be helpful to include some of the following logic in your program:
+```
+# get some sort of input from another function
+ self._wait_for_change = getInput()
+# If something has changed, send action
+    if self._wait_for_change:
+        self.send_goal()
+
+# separate from your goal_response_callback
+def set_wait_for_change(self, wait):
+    self._wait_for_change = wait
+
+```
+
+
+
 
